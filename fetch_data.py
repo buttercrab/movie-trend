@@ -39,8 +39,6 @@ if __name__ == '__main__':
 	for item in bs_object.select('.tit3'):
 		movies.append(str(item.find_all('a')[0].text))
 
-	dt = datetime.now()
-
 	cnt = 0
 	for movie in movies:
 		cnt += 1
@@ -74,8 +72,8 @@ if __name__ == '__main__':
 					})
 
 			body = {
-				'startDate': make_date(dt - timedelta(days=101)),
-				'endDate': make_date(dt - timedelta(days=1)),
+				'startDate': make_date(datetime.strptime(date, '%Y-%m-%d') - timedelta(days=10)),
+				'endDate': make_date(datetime.now() - timedelta(days=1)),
 				'timeUnit': 'date',
 				'keywordGroups': [
 					{
