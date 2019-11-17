@@ -1,3 +1,4 @@
+import argparse
 import json
 import urllib.parse
 from datetime import datetime
@@ -9,6 +10,10 @@ from bs4 import BeautifulSoup
 
 secret_key = ''
 conf = json.loads(open('data/conf.json').readline())
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--movie', type=str)
+args = parser.parse_args()
 
 
 def make_date(d: datetime):
@@ -33,11 +38,14 @@ if __name__ == '__main__':
 	fetch_api_key()
 	movies = []
 
-	html = urlopen('https://movie.naver.com/movie/sdb/rank/rmovie.nhn')
-	bs_object = BeautifulSoup(html, 'html.parser')
+	if args.movie is None:
+		html = urlopen('https://movie.naver.com/movie/sdb/rank/rmovie.nhn')
+		bs_object = BeautifulSoup(html, 'html.parser')
 
-	for item in bs_object.select('.tit3'):
-		movies.append(str(item.find_all('a')[0].text))
+		for item in bs_object.select('.tit3'):
+			movies.append(str(item.find_all('a')[0].text))
+	else:
+		movies.append(args.movie)
 
 	cnt = 0
 	for movie in movies:
@@ -73,7 +81,8 @@ if __name__ == '__main__':
 
 			body = {
 				'startDate': make_date(datetime.strptime(date, '%Y-%m-%d') - timedelta(days=10)),
-				'endDate': make_date(datetime.now() - timedelta(days=1)),
+				'endDate': make_date(
+					min(datetime.now() - timedelta(days=1), datetime.strptime(date, '%Y-%m-%d') + timedelta(days=60))),
 				'timeUnit': 'date',
 				'keywordGroups': [
 					{
