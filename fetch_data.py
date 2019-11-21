@@ -89,6 +89,7 @@ if __name__ == '__main__':
 						'groupName': movie,
 						'keywords': [
 							movie,
+							movie.replace(':', '').replace('  ', ' ')
 						]
 					},
 				]
