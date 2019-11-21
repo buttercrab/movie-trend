@@ -26,7 +26,7 @@ Fetch data and view data by timeline and find fitting and r-squared value
 
 ```shell script
 mkdir -p figure plot
-# download data that you want to download
+# Download top 50 movie from naver
 python3 fetch_data.py
 python3 view_data.py
 python3 find_fit.py
