@@ -20,6 +20,28 @@ echo "{}" >> data/conf.json
 python3 fetch_data.py
 ```
 
+## Use more further
+
+Fetch data and view data by timeline and find fitting and r-squared value
+
+```shell script
+mkdir -p figure plot
+# download data that you want to download
+python3 fetch_data.py
+python3 view_data.py
+python3 find_fit.py
+```
+
+### Download your favorite movie
+
+If it fails then check if movie came out after 2016
+
+```shell script
+python3 fetch_data.py --movie "MOVIE_NAME"
+python3 view_data.py --movie "MOVIE_NAME"
+python3 find_fit.py --movie "MOVIE_NAME"
+```
+
 ## License
 
 ```
