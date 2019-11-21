@@ -9,7 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 
 secret_key = ''
-conf = json.loads(open('data/conf.json').readline())
+conf = json.loads(open('data/conf.json', 'r').readline())
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--movie', type=str)
@@ -23,7 +23,7 @@ def make_date(d: datetime):
 def fetch_api_key():
 	global secret_key
 	if secret_key == '':
-		secret = open('secret/secret.txt')
+		secret = open('secret/secret.txt', 'r')
 		secret_key = secret.readline()
 	return secret_key
 
@@ -117,6 +117,7 @@ if __name__ == '__main__':
 			'audience_data': audience_data,
 			'search_data': search_data
 		}))
+		file.close()
 		conf[movie] = date
 		save_conf()
 

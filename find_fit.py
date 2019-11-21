@@ -2,7 +2,9 @@ import argparse
 import json
 
 import matplotlib.font_manager as fm
+import numpy as np
 from matplotlib import pyplot as plt
+from scipy.optimize import curve_fit
 
 # for korean font
 path = 'font/NanumBarunpenRegular.ttf'
@@ -19,29 +21,40 @@ if __name__ == '__main__':
 		if args.movie is None or args.movie == movie:
 			cnt += 1
 			print(str(cnt) + ': ' + movie)
-			data = json.loads(open('data/' + movie + '.json', 'r').readline())
+			data = json.loads(open('data/' + movie + '.json').readline())
 			audience_data = data['audience_data']
 			search_data = data['search_data']
-
-			x, y = [], []
-			for item in search_data:
-				x.append(item['time'])
-				y.append(item['data'])
-			plt.plot(x, y)
 
 			max_value = 0
 			for item in audience_data:
 				max_value = max(max_value, item['data'])
 
-			x, y = [], []
+			audience = {}
+			search = {}
+			for item in search_data:
+				search[item['time']] = item['data']
+
 			for item in audience_data:
-				x.append(item['time'])
-				y.append(float(item['data']) / max_value * 100)
-			plt.plot(x, y)
+				audience[item['time']] = float(item['data']) / max_value * 100
 
-			plt.xticks(rotation=90)
+			xdata, ydata = [], []
+			for time in search:
+				if time in audience:
+					xdata.append(search[time])
+					ydata.append(audience[time])
 
-			plt.title(movie, fontproperties=font)
-			plt.savefig('figure/' + movie + '.pdf')
-			# plt.show()
+			if len(ydata) <= 1:
+				continue
+
+
+			def f(x, a, b):
+				return a * x + b
+
+
+			prop = curve_fit(f, np.array(xdata), np.array(ydata))
+			a, b = prop[0][0], prop[0][1]
+
+			x = np.linspace(0, 100, 1000)
+			plt.scatter(xdata, ydata)
+			plt.savefig('plot/' + movie + '.pdf')
 			plt.clf()
